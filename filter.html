@@ -94,6 +94,19 @@
         </div>
     </div>
 
+    <!-- Offcanvas Panel -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="profileViewer" aria-labelledby="profileViewerLabel">
+        <div class="offcanvas-header">
+            <h5 id="profileViewerLabel">Profile Viewer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="profileContent">
+                <p>Select a profile to view details.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -138,7 +151,7 @@
             const tableBody = document.querySelector('#talentTable tbody');
             tableBody.innerHTML = '';
 
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 const row = `
                     <tr>
                         <td>${item.name}</td>
@@ -154,9 +167,9 @@
                                     Actions
                                 </button>
                                 <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item view-profile" href="#" data-bs-toggle="offcanvas" data-bs-target="#profileViewer" data-index="${index}">View</a></li>
                                     <li><a class="dropdown-item" href="#">Edit</a></li>
                                     <li><a class="dropdown-item" href="#">Delete</a></li>
-                                    <li><a class="dropdown-item" href="#">View</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -166,7 +179,24 @@
             });
         }
 
-        // Initialize table with all data
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('view-profile')) {
+                const index = event.target.getAttribute('data-index');
+                const profile = data[index];
+
+                const profileContent = document.getElementById('profileContent');
+                profileContent.innerHTML = `
+                    <h5>${profile.name}</h5>
+                    <p><strong>Education:</strong> ${profile.education}</p>
+                    <p><strong>Certifications:</strong> ${profile.certifications}</p>
+                    <p><strong>Experience:</strong> ${profile.experience} years</p>
+                    <p><strong>Visa Status:</strong> ${profile.visa}</p>
+                    <p><strong>Location:</strong> ${profile.location}</p>
+                    <p><strong>Skills:</strong> ${profile.skills}</p>
+                `;
+            }
+        });
+
         $(document).ready(function () {
             $('#talentTable').DataTable();
             populateTable(data);
