@@ -103,7 +103,40 @@
         </div>
         <div class="offcanvas-body">
             <div id="profileContent">
-                <p>Select a profile to view details.</p>
+                <h5 class="mb-3">Professional Profile</h5>
+                <div class="mb-4">
+                    <h6>Basic Information</h6>
+                    <p><strong>Name:</strong> <span id="profileName"></span></p>
+                    <p><strong>Education:</strong> <span id="profileEducation"></span></p>
+                    <p><strong>Experience:</strong> <span id="profileExperience"></span> years</p>
+                    <p><strong>Location:</strong> <span id="profileLocation"></span></p>
+                </div>
+                <div class="mb-4">
+                    <h6>Social Links</h6>
+                    <ul id="profileSocialLinks" class="list-unstyled">
+                        <!-- Social links will be dynamically added here -->
+                    </ul>
+                </div>
+                <div class="mb-4">
+                    <h6>GitHub</h6>
+                    <p><strong>Repositories:</strong> <span id="profileGitHubRepos"></span></p>
+                </div>
+                <div class="mb-4">
+                    <h6>Kaggle Achievements</h6>
+                    <p id="profileKaggle"></p>
+                </div>
+                <div class="mb-4">
+                    <h6>Best Work</h6>
+                    <ul id="profileBestWork" class="list-unstyled">
+                        <!-- Best work will be dynamically added here -->
+                    </ul>
+                </div>
+                <div class="mb-4">
+                    <h6>Publications</h6>
+                    <ul id="profilePublications" class="list-unstyled">
+                        <!-- Publications will be dynamically added here -->
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -117,13 +150,24 @@
             {
                 name: "John Doe",
                 education: "Bachelor's in Computer Science",
-                certifications: 3,
-                experience: 5,
-                visa: "H1B",
-                location: "New York",
-                skills: "Python, JavaScript"
-            },
-            // Add more sample data here
+                experience: 10,
+                location: "Florida",
+                socialLinks: {
+                    linkedin: "https://linkedin.com/in/johndoe",
+                    github: "https://github.com/johndoe",
+                    twitter: "https://twitter.com/johndoe"
+                },
+                githubRepos: 25,
+                kaggle: "Top 5% in Data Science Competitions",
+                bestWork: [
+                    "Developed a scalable microservices architecture for a fintech app.",
+                    "Built a machine learning model for fraud detection with 95% accuracy."
+                ],
+                publications: [
+                    "Doe, J. (2020). Advanced Machine Learning Techniques. Journal of AI Research.",
+                    "Doe, J. (2018). Scalable Microservices Architecture. Tech Journal."
+                ]
+            }
         ];
 
         function applyFilters() {
@@ -161,11 +205,11 @@
                     <tr>
                         <td>${item.name}</td>
                         <td>${item.education}</td>
-                        <td>${item.certifications}</td>
+                        <td>${item.certifications || 0}</td>
                         <td>${item.experience}</td>
-                        <td>${item.visa}</td>
+                        <td>${item.visa || "N/A"}</td>
                         <td>${item.location}</td>
-                        <td>${item.skills}</td>
+                        <td>${item.skills || "N/A"}</td>
                         <td>${item.score}</td>
                         <td>
                             <div class="dropdown">
@@ -190,16 +234,38 @@
                 const index = event.target.getAttribute('data-index');
                 const profile = data[index];
 
-                const profileContent = document.getElementById('profileContent');
-                profileContent.innerHTML = `
-                    <h5>${profile.name}</h5>
-                    <p><strong>Education:</strong> ${profile.education}</p>
-                    <p><strong>Certifications:</strong> ${profile.certifications}</p>
-                    <p><strong>Experience:</strong> ${profile.experience} years</p>
-                    <p><strong>Visa Status:</strong> ${profile.visa}</p>
-                    <p><strong>Location:</strong> ${profile.location}</p>
-                    <p><strong>Skills:</strong> ${profile.skills}</p>
-                `;
+                // Populate basic information
+                document.getElementById('profileName').textContent = profile.name;
+                document.getElementById('profileEducation').textContent = profile.education;
+                document.getElementById('profileExperience').textContent = profile.experience;
+                document.getElementById('profileLocation').textContent = profile.location;
+
+                // Populate social links
+                const socialLinks = document.getElementById('profileSocialLinks');
+                socialLinks.innerHTML = '';
+                for (const [platform, url] of Object.entries(profile.socialLinks)) {
+                    socialLinks.innerHTML += `<li><a href="${url}" target="_blank">${platform}</a></li>`;
+                }
+
+                // Populate GitHub repositories
+                document.getElementById('profileGitHubRepos').textContent = profile.githubRepos;
+
+                // Populate Kaggle achievements
+                document.getElementById('profileKaggle').textContent = profile.kaggle;
+
+                // Populate best work
+                const bestWork = document.getElementById('profileBestWork');
+                bestWork.innerHTML = '';
+                profile.bestWork.forEach(work => {
+                    bestWork.innerHTML += `<li>${work}</li>`;
+                });
+
+                // Populate publications
+                const publications = document.getElementById('profilePublications');
+                publications.innerHTML = '';
+                profile.publications.forEach(publication => {
+                    publications.innerHTML += `<li>${publication}</li>`;
+                });
             }
         });
 
