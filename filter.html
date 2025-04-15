@@ -84,6 +84,7 @@
                         <th>Visa Status</th>
                         <th>Location</th>
                         <th>Skills</th>
+                        <th>Ranking Score</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -133,18 +134,22 @@
             const visa = document.getElementById('filterVisa').value;
             const location = document.getElementById('filterLocation').value.toLowerCase();
 
-            const filteredData = data.filter(item => {
-                return (
-                    (!name || item.name.toLowerCase().includes(name)) &&
-                    (!education || item.education.toLowerCase().includes(education)) &&
-                    (!skills || item.skills.toLowerCase().includes(skills)) &&
-                    (!experience || item.experience == experience) &&
-                    (!visa || item.visa === visa) &&
-                    (!location || item.location.toLowerCase().includes(location))
-                );
+            const filteredData = data.map(item => {
+                let score = 0;
+
+                if (name && item.name.toLowerCase().includes(name)) score += 10;
+                if (education && item.education.toLowerCase().includes(education)) score += 20;
+                if (skills && item.skills.toLowerCase().includes(skills)) score += 30;
+                if (experience && item.experience == experience) score += 25;
+                if (visa && item.visa === visa) score += 15;
+                if (location && item.location.toLowerCase().includes(location)) score += 20;
+
+                return { ...item, score };
             });
 
-            populateTable(filteredData);
+            const rankedData = filteredData.sort((a, b) => b.score - a.score);
+
+            populateTable(rankedData);
         }
 
         function populateTable(data) {
@@ -161,6 +166,7 @@
                         <td>${item.visa}</td>
                         <td>${item.location}</td>
                         <td>${item.skills}</td>
+                        <td>${item.score}</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
